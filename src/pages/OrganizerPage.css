@@ -1,0 +1,35 @@
+.applicant-link {
+  display: grid;
+  gap: 18px;
+}
+
+.applicant-link p {
+  margin-bottom: 5px;
+  color: #455866;
+  line-height: 1.55;
+}
+
+.applicant-link small {
+  color: #71808c;
+}
+
+.applicant-link-control {
+  display: grid;
+  grid-template-columns: minmax(260px, 1fr) auto auto;
+  gap: 10px;
+}
+
+.applicant-link-control input {
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  background: #f7f9fa;
+}
+
+@media (max-width: 700px) {
+  .applicant-link-control {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .applicant-link-control input {
+    grid-column: 1 / -1;
+  }
+}
