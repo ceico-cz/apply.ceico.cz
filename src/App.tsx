@@ -27,10 +27,10 @@ export default function App() {
       <Route path="/apply/:slug" element={user ? <ApplicationPage /> : <Navigate to="/login" replace />} />
       <Route path="/dashboard" element={user ? <DashboardPage /> : <Navigate to="/login" replace />} />
       <Route path="/referee" element={user ? <RefereePage /> : <Navigate to="/login" replace />} />
+      <Route path="/referee/:requestId" element={user ? <RefereePage /> : <Navigate to="/login" replace />} />
       <Route path="/evaluate" element={user ? <EvaluatorPage /> : <Navigate to="/login" replace />} />
       <Route path="/organizer/*" element={user?.organizer_approved ? <OrganizerPage /> : <Navigate to="/" replace />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   </Layout>
 }
-
