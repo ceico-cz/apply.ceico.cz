@@ -34,6 +34,7 @@ export function ApplicationPage() {
     onSuccess: (data) => { client.setQueryData(['application', slug], { ...data, campaign: query.data?.campaign }); setMessage('Changes saved'); setTimeout(() => setMessage(''), 2000) },
   })
   if (query.isLoading) return <div className="app-loading">Preparing your application…</div>
+  if (query.error) return <div className="container page"><div className="notice error"><strong>Unable to open this application</strong><p>{query.error.message}</p></div></div>
   if (!query.data?.campaign) return <div className="container page"><div className="notice error">Unable to open this application.</div></div>
   const application = query.data, campaign = application.campaign!
   const set = (key: string, value: string) => setProfile((current) => ({ ...current, [key]: value }))
