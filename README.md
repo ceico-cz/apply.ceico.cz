@@ -19,4 +19,4 @@ VITE_API_URL=https://api.apply.ceico.cz npm run dev
 
 ## Deployment
 
-Pushes to `main` are linted, built, and deployed through GitHub Actions. `VITE_API_URL` supplies the public API origin. `VITE_BASE_PATH` is `/apply.ceico.cz/` for the temporary GitHub project URL and should be changed to `/` when the custom domain is activated.
+Pushes to `main` are linted, built, and deployed through GitHub Actions. `VITE_API_URL` supplies the public API origin. `VITE_BASE_PATH` is `/` because Pages serves this repository through the `apply.ceico.cz` custom domain.
