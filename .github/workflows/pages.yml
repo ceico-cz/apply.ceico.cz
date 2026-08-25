@@ -31,6 +31,7 @@ jobs:
       - run: npm run build
         env:
           VITE_API_URL: ${{ vars.VITE_API_URL }}
+          VITE_BASE_PATH: ${{ vars.VITE_BASE_PATH }}
       - run: cp dist/index.html dist/404.html
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
@@ -38,4 +39,3 @@ jobs:
           path: dist
       - id: deployment
         uses: actions/deploy-pages@v4
-

@@ -19,5 +19,4 @@ VITE_API_URL=https://api.apply.ceico.cz npm run dev
 
 ## Deployment
 
-Pushes to `main` are linted, built, and deployed through GitHub Actions. The repository variable `VITE_API_URL` supplies the public API origin during the build.
-
+Pushes to `main` are linted, built, and deployed through GitHub Actions. `VITE_API_URL` supplies the public API origin. `VITE_BASE_PATH` is `/apply.ceico.cz/` for the temporary GitHub project URL and should be changed to `/` when the custom domain is activated.
