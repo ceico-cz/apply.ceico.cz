@@ -1,0 +1,236 @@
+.assignment-matrix-page {
+  max-width: 1440px;
+}
+
+.assignment-matrix-page .back {
+  display: inline-block;
+  margin-bottom: 28px;
+}
+
+.matrix-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 22px;
+  margin: 0 0 16px;
+  color: #526675;
+  font-size: .78rem;
+}
+
+.matrix-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.matrix-legend b {
+  width: 22px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+  border: 1px solid #8fa1ad;
+  background: #edf3f5;
+  color: var(--ink);
+}
+
+.matrix-legend span:first-child b {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: #fff;
+}
+
+.matrix-legend span:nth-child(2) b {
+  background: var(--green-bg);
+  border-color: #6eaa96;
+  color: var(--green);
+}
+
+.matrix-legend span:nth-child(3) b {
+  background: var(--red-bg);
+  border-color: #cf8e94;
+  color: var(--red);
+}
+
+.assignment-matrix-scroll {
+  max-height: calc(100vh - 260px);
+  overflow: auto;
+  background: #fff;
+  border: 1px solid var(--line);
+}
+
+.assignment-matrix {
+  width: max-content;
+  min-width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.assignment-matrix th,
+.assignment-matrix td {
+  padding: 5px;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  text-align: center;
+}
+
+.assignment-matrix thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  height: 180px;
+  background: #edf3f5;
+  vertical-align: bottom;
+}
+
+.assignment-matrix .matrix-corner {
+  left: 0;
+  z-index: 4;
+  width: 270px;
+  min-width: 270px;
+  height: auto;
+  padding: 12px 14px;
+  color: #526675;
+  text-align: left;
+  text-transform: uppercase;
+  font-size: .68rem;
+  letter-spacing: .04em;
+}
+
+.matrix-evaluator {
+  width: 52px;
+  min-width: 52px;
+}
+
+.matrix-evaluator-heading {
+  position: relative;
+  width: 42px;
+  height: 166px;
+}
+
+.matrix-evaluator-heading span {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 145px;
+  overflow: hidden;
+  padding: 6px 9px;
+  transform: translate(-50%, -50%) rotate(-90deg);
+  background: #fff;
+  border: 1px solid #9eacb6;
+  color: var(--ink);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: .75rem;
+  font-weight: 700;
+}
+
+.assignment-matrix .matrix-applicant {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  width: 270px;
+  min-width: 270px;
+  padding: 8px 14px;
+  background: #fff;
+  text-align: left;
+}
+
+.matrix-applicant > div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.matrix-applicant strong,
+.matrix-applicant small {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.matrix-applicant strong {
+  color: var(--ink);
+  font-size: .82rem;
+}
+
+.matrix-applicant small {
+  margin-top: 2px;
+  color: #596d7c;
+  font-size: .7rem;
+  font-weight: 400;
+}
+
+.matrix-count {
+  min-width: 24px;
+  height: 24px;
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  border: 1px solid #8fa1ad;
+  border-radius: 50%;
+  background: #edf3f5;
+  color: var(--ink);
+  font-size: .7rem;
+  font-weight: 800;
+}
+
+.matrix-cell {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  margin: auto;
+  border: 1px solid #9eacb6;
+  border-radius: 3px;
+  background: #fff;
+  color: var(--ink);
+  cursor: pointer;
+  font-weight: 900;
+}
+
+.matrix-cell:hover:not(:disabled) {
+  border-color: var(--ink);
+  background: var(--info-bg);
+}
+
+.matrix-cell-assigned {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: #fff;
+}
+
+.matrix-cell-submitted {
+  background: var(--green-bg);
+  border-color: #6eaa96;
+  color: var(--green);
+}
+
+.matrix-cell-conflict {
+  background: var(--red-bg);
+  border-color: #cf8e94;
+  color: var(--red);
+}
+
+.matrix-cell:disabled {
+  cursor: not-allowed;
+  opacity: .72;
+}
+
+.matrix-cell-unassigned:disabled {
+  border-style: dashed;
+  background: #edf1f3;
+  color: #596975;
+}
+
+@media (max-width: 600px) {
+  .assignment-matrix-page {
+    width: calc(100% - 24px);
+  }
+
+  .assignment-matrix .matrix-corner,
+  .assignment-matrix .matrix-applicant {
+    width: 220px;
+    min-width: 220px;
+  }
+}

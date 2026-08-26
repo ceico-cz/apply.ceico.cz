@@ -1,15 +1,3 @@
-.user-menu { position: relative; }
-.user-menu summary { list-style: none; display: flex; align-items: center; gap: 9px; cursor: pointer; padding: 5px 0; color: #fff; }
-.user-menu summary::-webkit-details-marker { display: none; }
-.user-avatar { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: #fff; color: var(--ink); border: 2px solid var(--ceico-cyan); font-size: .72rem; font-weight: 800; }
-.user-identity { display: flex; flex-direction: column; max-width: 190px; }
-.user-identity strong, .user-identity small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.user-identity strong { font-size: .8rem; color: #fff; }
-.user-identity small { font-size: .68rem; color: #c5d3dd; }
-.user-menu-panel { position: absolute; right: 0; top: 48px; width: 230px; padding: 10px; background: #fff; border: 1px solid var(--line); border-top: 3px solid var(--ceico-orange); box-shadow: var(--shadow); display: flex; flex-direction: column; z-index: 80; }
-.user-menu-panel a, .user-menu-panel button { border: 0; background: transparent; color: var(--ink); text-decoration: none; text-align: left; padding: 11px 10px; cursor: pointer; font-size: .84rem; }
-.user-menu-panel a:hover, .user-menu-panel button:hover { background: var(--pale); }
-.user-role { padding: 8px 10px 12px; border-bottom: 1px solid var(--line); color: #71808c; font-size: .72rem; }
 .admin-page { max-width: 1100px; }
 .admin-section { margin-bottom: 24px; }
 .admin-section-heading h2 { margin-bottom: 5px; }

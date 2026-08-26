@@ -46,7 +46,23 @@
   text-overflow: ellipsis;
 }
 
+.organizer-panel-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 18px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid var(--line);
+}
+
+.organizer-panel-heading h2 {
+  margin: 0;
+  font-size: 1.35rem;
+}
+
 @media (max-width: 600px) {
+  .organizer-panel-heading { align-items: flex-start; flex-direction: column; }
   .operator-form { grid-template-columns: 1fr; }
   .operator-form .button { justify-self: start; }
 }

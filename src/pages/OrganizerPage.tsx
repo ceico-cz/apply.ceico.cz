@@ -1,22 +1,10 @@
 import { FormEvent, useEffect, useMemo, useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { Link, useSearchParams } from 'react-router-dom'
 import { api } from '../api'
 import { EmptyState, StatusPill } from '../components/Layout'
-import type { Application, Campaign, ResearchField } from '../types'
+import type { Application, Campaign, CampaignEvaluator, ResearchField } from '../types'
 import './OrganizerPage.css'
-
-type CampaignEvaluator = {
-  id: number
-  email: string
-  first_name: string
-  last_name: string
-  assignments: Array<{
-    id: number
-    status: string
-    application_id: number
-    applicant: { email: string; first_name: string; last_name: string }
-  }>
-}
 
 type EvaluatorSuggestion = Omit<CampaignEvaluator, 'assignments'>
 
@@ -36,8 +24,10 @@ const iso = (days: number) => {
 
 export function OrganizerPage({ canCreate }: { canCreate: boolean }) {
   const client = useQueryClient()
+  const [searchParams] = useSearchParams()
+  const requestedCampaignId = Number(searchParams.get('campaign'))
   const campaigns = useQuery<Campaign[]>({ queryKey: ['campaigns'], queryFn: () => api('/campaigns') })
-  const [selectedId, setSelectedId] = useState<number | 'new' | null>(canCreate ? 'new' : null)
+  const [selectedId, setSelectedId] = useState<number | 'new' | null>(Number.isInteger(requestedCampaignId) && requestedCampaignId > 0 ? requestedCampaignId : canCreate ? 'new' : null)
   useEffect(() => {
     if (!canCreate && selectedId === null && campaigns.data?.length) setSelectedId(campaigns.data[0].id)
   }, [campaigns.data, canCreate, selectedId])
@@ -114,7 +104,7 @@ function EvaluatorPanel({ campaign, evaluators }: { campaign: Campaign; evaluato
       ])
     } catch (cause) { setError(cause instanceof Error ? cause.message : 'Could not add evaluator') }
   }
-  return <Panel title="Evaluators"><form className="operator-form" onSubmit={addEvaluator}><label className="field">Evaluator email<input required type="email" list={`known-evaluators-${campaign.id}`} value={email} onChange={(event) => setEmail(event.target.value)} placeholder="evaluator@institution.org" autoComplete="off" /></label><button className="button secondary">Add evaluator</button></form><datalist id={`known-evaluators-${campaign.id}`}>{suggestions.data?.map((evaluator) => <option value={evaluator.email} key={evaluator.id}>{[evaluator.first_name, evaluator.last_name].filter(Boolean).join(' ')}</option>)}</datalist><datalist id={`campaign-evaluators-${campaign.id}`}>{evaluators?.map((evaluator) => <option value={evaluator.email} key={evaluator.id}>{[evaluator.first_name, evaluator.last_name].filter(Boolean).join(' ')}</option>)}</datalist>{error && <div className="notice error">{error}</div>}{evaluators === undefined ? <div className="table-empty">Loading evaluators…</div> : evaluators.length ? <div className="data-table"><div className="data-row evaluator-data-row header"><span>Evaluator</span><span>Progress</span><span>Applicants</span></div>{evaluators.map((evaluator) => { const submitted = evaluator.assignments.filter((item) => item.status === 'submitted').length; const conflicts = evaluator.assignments.filter((item) => item.status === 'conflict').length; const applicants = evaluator.assignments.map((item) => [item.applicant.first_name, item.applicant.last_name].filter(Boolean).join(' ') || item.applicant.email).join(', '); return <div className="data-row evaluator-data-row" key={evaluator.id}><span className="applicant-cell"><strong>{[evaluator.first_name, evaluator.last_name].filter(Boolean).join(' ') || evaluator.email}</strong><small>{evaluator.email}</small></span><span>{submitted} / {evaluator.assignments.length} submitted{conflicts ? ` · ${conflicts} conflict${conflicts === 1 ? '' : 's'}` : ''}</span><span className="assigned-applicants" title={applicants}>{applicants || '—'}</span></div>})}</div> : <div className="table-empty">No evaluators added yet.</div>}</Panel>
+  return <Panel title="Evaluators" action={<Link className="button secondary" to={`/organizer/campaigns/${campaign.id}/assignments`}>Assignment matrix</Link>}><form className="operator-form" onSubmit={addEvaluator}><label className="field">Evaluator email<input required type="email" list={`known-evaluators-${campaign.id}`} value={email} onChange={(event) => setEmail(event.target.value)} placeholder="evaluator@institution.org" autoComplete="off" /></label><button className="button secondary">Add evaluator</button></form><datalist id={`known-evaluators-${campaign.id}`}>{suggestions.data?.map((evaluator) => <option value={evaluator.email} key={evaluator.id}>{[evaluator.first_name, evaluator.last_name].filter(Boolean).join(' ')}</option>)}</datalist><datalist id={`campaign-evaluators-${campaign.id}`}>{evaluators?.map((evaluator) => <option value={evaluator.email} key={evaluator.id}>{[evaluator.first_name, evaluator.last_name].filter(Boolean).join(' ')}</option>)}</datalist>{error && <div className="notice error">{error}</div>}{evaluators === undefined ? <div className="table-empty">Loading evaluators…</div> : evaluators.length ? <div className="data-table"><div className="data-row evaluator-data-row header"><span>Evaluator</span><span>Progress</span><span>Applicants</span></div>{evaluators.map((evaluator) => { const submitted = evaluator.assignments.filter((item) => item.status === 'submitted').length; const conflicts = evaluator.assignments.filter((item) => item.status === 'conflict').length; const applicants = evaluator.assignments.map((item) => [item.applicant.first_name, item.applicant.last_name].filter(Boolean).join(' ') || item.applicant.email).join(', '); return <div className="data-row evaluator-data-row" key={evaluator.id}><span className="applicant-cell"><strong>{[evaluator.first_name, evaluator.last_name].filter(Boolean).join(' ') || evaluator.email}</strong><small>{evaluator.email}</small></span><span>{submitted} / {evaluator.assignments.length} submitted{conflicts ? ` · ${conflicts} conflict${conflicts === 1 ? '' : 's'}` : ''}</span><span className="assigned-applicants" title={applicants}>{applicants || '—'}</span></div>})}</div> : <div className="table-empty">No evaluators added yet.</div>}</Panel>
 }
 
 function ApplicantDrawer({ application, campaign, canRecordDecisions, close, refresh }: { application: Application; campaign: Campaign; canRecordDecisions: boolean; close: () => void; refresh: () => void }) {
@@ -132,5 +122,5 @@ function ApplicantDrawer({ application, campaign, canRecordDecisions, close, ref
   return <div className="drawer-backdrop" onMouseDown={close}><aside className="drawer" onMouseDown={(e) => e.stopPropagation()}><button className="drawer-close" onClick={close}>×</button><div className="eyebrow">Applicant #{application.id}</div><h2>{application.applicant.first_name} {application.applicant.last_name}</h2><p>{application.applicant.email}</p><StatusPill status={application.status} /><dl className="profile-list"><div><dt>Institution</dt><dd>{application.profile.present_institution || '—'}</dd></div><div><dt>Primary research</dt><dd>{application.primary_field_label || '—'}</dd></div><div><dt>Reference letters</dt><dd>{application.referees.filter((r) => r.status === 'submitted').length} / {campaign.required_referees}</dd></div></dl>{!['review_ready', 'override_ready'].includes(application.status) && <button className="button secondary full" onClick={override}>Admit incomplete application</button>}<form onSubmit={assign} className="drawer-section"><h3>Assign evaluator</h3><label className="field">Verified email<input required type="email" list={`campaign-evaluators-${campaign.id}`} value={email} onChange={(e) => setEmail(e.target.value)} placeholder="reviewer@institution.edu" autoComplete="off" /></label><button className="button primary full" disabled={!['review_ready', 'override_ready'].includes(application.status)}>Assign</button></form>{canRecordDecisions && <div className="drawer-section"><h3>Final decision</h3><div className="decision-grid">{['selected', 'waitlisted', 'rejected'].map((item) => <button className="button ghost" onClick={() => decision(item)} key={item}>{item}</button>)}</div></div>}</aside></div>
 }
 
-function Panel({ title, children }: { title: string; children: React.ReactNode }) { return <section className="panel organizer-panel"><h2>{title}</h2>{children}</section> }
+function Panel({ title, action, children }: { title: string; action?: React.ReactNode; children: React.ReactNode }) { return <section className="panel organizer-panel"><div className="organizer-panel-heading"><h2>{title}</h2>{action}</div>{children}</section> }
 function OrgField({ label, value, onChange, type = 'text' }: { label: string; value: string; onChange: (v: string) => void; type?: string }) { return <label className="field">{label}<input required type={type} value={value} onChange={(e) => onChange(e.target.value)} /></label> }

@@ -12,6 +12,19 @@ export type User = {
 
 export type ResearchField = { id: number; name: string }
 
+export type CampaignEvaluator = {
+  id: number
+  email: string
+  first_name: string
+  last_name: string
+  assignments: Array<{
+    id: number
+    status: string
+    application_id: number
+    applicant: { email: string; first_name: string; last_name: string }
+  }>
+}
+
 export type RubricCriterion = {
   id: number
   title: string
