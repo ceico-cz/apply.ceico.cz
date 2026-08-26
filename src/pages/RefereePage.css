@@ -1,0 +1,25 @@
+.uploaded-reference {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 20px 0;
+  padding: 15px 17px;
+  border: 1px solid #9bc9b9;
+  background: #edf7f2;
+}
+
+.uploaded-reference > span {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  background: var(--green);
+  color: #fff;
+  font-weight: 700;
+}
+
+.uploaded-reference div { display: flex; flex-direction: column; gap: 3px; }
+.uploaded-reference a { font-weight: 700; }
+.uploaded-reference small { color: #557267; }
