@@ -1,4 +1,4 @@
-import { FormEvent, useMemo, useState } from 'react'
+import { FormEvent, useEffect, useMemo, useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { api } from '../api'
 import { EmptyState, StatusPill } from '../components/Layout'
@@ -18,18 +18,29 @@ type CampaignEvaluator = {
   }>
 }
 
+type CampaignOperator = {
+  id: number
+  email: string
+  first_name: string
+  last_name: string
+  role: 'owner' | 'operator'
+}
+
 const iso = (days: number) => {
   const date = new Date(Date.now() + days * 86400000)
   date.setMinutes(date.getMinutes() - date.getTimezoneOffset())
   return date.toISOString().slice(0, 16)
 }
 
-export function OrganizerPage() {
+export function OrganizerPage({ canCreate }: { canCreate: boolean }) {
   const client = useQueryClient()
   const campaigns = useQuery<Campaign[]>({ queryKey: ['campaigns'], queryFn: () => api('/campaigns') })
-  const [selectedId, setSelectedId] = useState<number | 'new'>('new')
+  const [selectedId, setSelectedId] = useState<number | 'new' | null>(canCreate ? 'new' : null)
+  useEffect(() => {
+    if (!canCreate && selectedId === null && campaigns.data?.length) setSelectedId(campaigns.data[0].id)
+  }, [campaigns.data, canCreate, selectedId])
   const selected = campaigns.data?.find((item) => item.id === selectedId)
-  return <section className="organizer-shell"><aside className="organizer-nav"><div><div className="eyebrow">Administration</div><h1>Recruitment campaigns</h1></div><button className="button primary full" onClick={() => setSelectedId('new')}>+ New campaign</button><div className="campaign-nav">{campaigns.data?.map((item) => <button key={item.id} className={selectedId === item.id ? 'active' : ''} onClick={() => setSelectedId(item.id)}><span className={`campaign-dot ${item.review_open ? 'review' : ''}`} /><span><strong>{item.title}</strong><small>{item.review_open ? 'Review open' : 'Collecting applications'}</small></span></button>)}</div></aside><div className="organizer-content">{selected ? <CampaignWorkspace campaign={selected} /> : <CampaignCreator onCreated={(campaign) => { client.invalidateQueries({ queryKey: ['campaigns'] }); setSelectedId(campaign.id) }} />}</div></section>
+  return <section className="organizer-shell"><aside className="organizer-nav"><div><div className="eyebrow">Administration</div><h1>Recruitment campaigns</h1></div>{canCreate && <button className="button primary full" onClick={() => setSelectedId('new')}>+ New campaign</button>}<div className="campaign-nav">{campaigns.data?.map((item) => <button key={item.id} className={selectedId === item.id ? 'active' : ''} onClick={() => setSelectedId(item.id)}><span className={`campaign-dot ${item.review_open ? 'review' : ''}`} /><span><strong>{item.title}</strong><small>{item.review_open ? 'Review open' : 'Collecting applications'}</small></span></button>)}</div></aside><div className="organizer-content">{selected ? <CampaignWorkspace campaign={selected} /> : canCreate ? <CampaignCreator onCreated={(campaign) => { client.invalidateQueries({ queryKey: ['campaigns'] }); setSelectedId(campaign.id) }} /> : campaigns.isLoading ? <div className="table-empty">Loading campaigns…</div> : <EmptyState title="No assigned campaigns">Campaigns assigned to you will appear here.</EmptyState>}</div></section>
 }
 
 function CampaignCreator({ onCreated }: { onCreated: (campaign: Campaign) => void }) {
@@ -59,14 +70,36 @@ function CampaignWorkspace({ campaign }: { campaign: Campaign }) {
     setLinkCopied(true)
     window.setTimeout(() => setLinkCopied(false), 2000)
   }
-  return <><div className="page-heading"><div><div className="eyebrow">Campaign workspace</div><h1>{campaign.title}</h1><p>Applications close {new Date(campaign.application_deadline).toLocaleString()}</p></div>{!campaign.review_open && <button className="button primary" onClick={openReview}>Open review</button>}</div><div className="applicant-link"><a className="applicant-url" href={applicantUrl} target="_blank" rel="noreferrer">{applicantUrl}</a><button type="button" className="text-button" onClick={copyApplicantUrl}>{linkCopied ? 'Copied' : 'Copy link'}</button></div><div className="stats"><div><strong>{stats.total}</strong><span>Applications</span></div><div><strong>{stats.ready}</strong><span>Ready for review</span></div><div><strong>{stats.awaiting}</strong><span>Awaiting letters</span></div><div><strong>{campaign.review_open ? 'Open' : 'Closed'}</strong><span>Review</span></div></div><EvaluatorPanel evaluators={evaluators.data} /><Panel title="Applicants">{query.data?.length ? <div className="data-table"><div className="data-row header"><span>Applicant</span><span>Status</span><span>References</span><span /></div>{query.data.map((item) => <div className="data-row" key={item.id}><span className="applicant-cell"><strong>{item.applicant.first_name || 'Unnamed'} {item.applicant.last_name}</strong><small>{item.applicant.email}</small></span><span><StatusPill status={item.status} /></span><span>{item.referees.filter((r) => r.status === 'submitted').length} / {campaign.required_referees}</span><span><button className="text-button" onClick={() => setSelected(item)}>Manage →</button></span></div>)}</div> : <EmptyState title="No applications yet">Applications submitted through the campaign link will appear here.</EmptyState>}</Panel>{selected && <ApplicantDrawer application={selected} campaign={campaign} close={() => setSelected(null)} refresh={() => client.invalidateQueries({ queryKey: ['campaign-applications', campaign.id] })} />}</>
+  return <><div className="page-heading"><div><div className="eyebrow">Campaign workspace</div><h1>{campaign.title}</h1><p>Applications close {new Date(campaign.application_deadline).toLocaleString()}</p></div>{!campaign.review_open && <button className="button primary" onClick={openReview}>Open review</button>}</div><div className="applicant-link"><a className="applicant-url" href={applicantUrl} target="_blank" rel="noreferrer">{applicantUrl}</a><button type="button" className="text-button" onClick={copyApplicantUrl}>{linkCopied ? 'Copied' : 'Copy link'}</button></div><div className="stats"><div><strong>{stats.total}</strong><span>Applications</span></div><div><strong>{stats.ready}</strong><span>Ready for review</span></div><div><strong>{stats.awaiting}</strong><span>Awaiting letters</span></div><div><strong>{campaign.review_open ? 'Open' : 'Closed'}</strong><span>Review</span></div></div><OperatorPanel campaign={campaign} /><EvaluatorPanel evaluators={evaluators.data} /><Panel title="Applicants">{query.data?.length ? <div className="data-table"><div className="data-row applicant-data-row header"><span>Applicant</span><span>Institution</span><span>Status</span><span>References</span><span /></div>{query.data.map((item) => <div className="data-row applicant-data-row" key={item.id}><span className="applicant-cell"><strong>{item.applicant.first_name || 'Unnamed'} {item.applicant.last_name}</strong><small>{item.applicant.email}</small></span><span className="institution-cell" title={item.profile.present_institution || undefined}>{item.profile.present_institution || '—'}</span><span><StatusPill status={item.status} /></span><span>{item.referees.filter((r) => r.status === 'submitted').length} / {campaign.required_referees}</span><span><button className="text-button" onClick={() => setSelected(item)}>Manage →</button></span></div>)}</div> : <EmptyState title="No applications yet">Applications submitted through the campaign link will appear here.</EmptyState>}</Panel>{selected && <ApplicantDrawer application={selected} campaign={campaign} canRecordDecisions={Boolean(campaign.can_record_decisions)} close={() => setSelected(null)} refresh={() => client.invalidateQueries({ queryKey: ['campaign-applications', campaign.id] })} />}</>
+}
+
+function OperatorPanel({ campaign }: { campaign: Campaign }) {
+  const client = useQueryClient()
+  const operators = useQuery<CampaignOperator[]>({ queryKey: ['campaign-operators', campaign.id], queryFn: () => api(`/campaigns/${campaign.id}/operators`) })
+  const [email, setEmail] = useState('')
+  const [error, setError] = useState('')
+  const addOperator = async (event: FormEvent) => {
+    event.preventDefault()
+    setError('')
+    try {
+      await api(`/campaigns/${campaign.id}/operators`, { method: 'POST', body: JSON.stringify({ email }) })
+      setEmail('')
+      await client.invalidateQueries({ queryKey: ['campaign-operators', campaign.id] })
+    } catch (cause) { setError(cause instanceof Error ? cause.message : 'Could not add operator') }
+  }
+  const removeOperator = async (operator: CampaignOperator) => {
+    if (!window.confirm(`Remove ${operator.email} as a campaign operator?`)) return
+    await api(`/campaigns/${campaign.id}/operators/${operator.id}`, { method: 'DELETE' })
+    await client.invalidateQueries({ queryKey: ['campaign-operators', campaign.id] })
+  }
+  return <Panel title="Campaign operators">{campaign.can_manage_operators && <form className="operator-form" onSubmit={addOperator}><label className="field">Operator email<input required type="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="operator@institution.org" /></label><button className="button secondary">Add operator</button></form>}{error && <div className="notice error">{error}</div>}{operators.data?.length ? <div className="data-table"><div className="data-row operator-data-row header"><span>Operator</span><span>Role</span><span /></div>{operators.data.map((operator) => <div className="data-row operator-data-row" key={`${operator.role}-${operator.id}`}><span className="applicant-cell"><strong>{[operator.first_name, operator.last_name].filter(Boolean).join(' ') || operator.email}</strong><small>{operator.email}</small></span><span>{operator.role === 'owner' ? 'Campaign owner' : 'Operator'}</span><span>{campaign.can_manage_operators && operator.role === 'operator' && <button type="button" className="text-button" onClick={() => removeOperator(operator)}>Remove</button>}</span></div>)}</div> : operators.isLoading ? <div className="table-empty">Loading operators…</div> : <div className="table-empty">No campaign operators assigned.</div>}</Panel>
 }
 
 function EvaluatorPanel({ evaluators }: { evaluators?: CampaignEvaluator[] }) {
   return <Panel title="Evaluators">{evaluators === undefined ? <div className="table-empty">Loading evaluators…</div> : evaluators.length ? <div className="data-table"><div className="data-row evaluator-data-row header"><span>Evaluator</span><span>Progress</span><span>Applicants</span></div>{evaluators.map((evaluator) => { const submitted = evaluator.assignments.filter((item) => item.status === 'submitted').length; const conflicts = evaluator.assignments.filter((item) => item.status === 'conflict').length; const applicants = evaluator.assignments.map((item) => [item.applicant.first_name, item.applicant.last_name].filter(Boolean).join(' ') || item.applicant.email).join(', '); return <div className="data-row evaluator-data-row" key={evaluator.id}><span className="applicant-cell"><strong>{[evaluator.first_name, evaluator.last_name].filter(Boolean).join(' ') || evaluator.email}</strong><small>{evaluator.email}</small></span><span>{submitted} / {evaluator.assignments.length} submitted{conflicts ? ` · ${conflicts} conflict${conflicts === 1 ? '' : 's'}` : ''}</span><span className="assigned-applicants" title={applicants}>{applicants}</span></div>})}</div> : <div className="table-empty">No evaluators assigned yet.</div>}</Panel>
 }
 
-function ApplicantDrawer({ application, campaign, close, refresh }: { application: Application; campaign: Campaign; close: () => void; refresh: () => void }) {
+function ApplicantDrawer({ application, campaign, canRecordDecisions, close, refresh }: { application: Application; campaign: Campaign; canRecordDecisions: boolean; close: () => void; refresh: () => void }) {
   const client = useQueryClient()
   const [email, setEmail] = useState('')
   const assign = async (event: FormEvent) => { event.preventDefault(); await api(`/campaigns/${campaign.id}/assignments`, { method: 'POST', body: JSON.stringify({ application_id: application.id, evaluator_email: email }) }); setEmail(''); await client.invalidateQueries({ queryKey: ['campaign-evaluators', campaign.id] }); window.alert('Evaluator assigned') }
@@ -78,7 +111,7 @@ function ApplicantDrawer({ application, campaign, close, refresh }: { applicatio
       window.alert('Outcome email sent')
     }
   }
-  return <div className="drawer-backdrop" onMouseDown={close}><aside className="drawer" onMouseDown={(e) => e.stopPropagation()}><button className="drawer-close" onClick={close}>×</button><div className="eyebrow">Applicant #{application.id}</div><h2>{application.applicant.first_name} {application.applicant.last_name}</h2><p>{application.applicant.email}</p><StatusPill status={application.status} /><dl className="profile-list"><div><dt>Institution</dt><dd>{application.profile.present_institution || '—'}</dd></div><div><dt>Primary research</dt><dd>{application.primary_field_label || '—'}</dd></div><div><dt>Reference letters</dt><dd>{application.referees.filter((r) => r.status === 'submitted').length} / {campaign.required_referees}</dd></div></dl>{!['review_ready', 'override_ready'].includes(application.status) && <button className="button secondary full" onClick={override}>Admit incomplete application</button>}<form onSubmit={assign} className="drawer-section"><h3>Assign evaluator</h3><label className="field">Verified email<input required type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="reviewer@institution.edu" /></label><button className="button primary full" disabled={!['review_ready', 'override_ready'].includes(application.status)}>Assign</button></form><div className="drawer-section"><h3>Final decision</h3><div className="decision-grid">{['selected', 'waitlisted', 'rejected'].map((item) => <button className="button ghost" onClick={() => decision(item)} key={item}>{item}</button>)}</div></div></aside></div>
+  return <div className="drawer-backdrop" onMouseDown={close}><aside className="drawer" onMouseDown={(e) => e.stopPropagation()}><button className="drawer-close" onClick={close}>×</button><div className="eyebrow">Applicant #{application.id}</div><h2>{application.applicant.first_name} {application.applicant.last_name}</h2><p>{application.applicant.email}</p><StatusPill status={application.status} /><dl className="profile-list"><div><dt>Institution</dt><dd>{application.profile.present_institution || '—'}</dd></div><div><dt>Primary research</dt><dd>{application.primary_field_label || '—'}</dd></div><div><dt>Reference letters</dt><dd>{application.referees.filter((r) => r.status === 'submitted').length} / {campaign.required_referees}</dd></div></dl>{!['review_ready', 'override_ready'].includes(application.status) && <button className="button secondary full" onClick={override}>Admit incomplete application</button>}<form onSubmit={assign} className="drawer-section"><h3>Assign evaluator</h3><label className="field">Verified email<input required type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="reviewer@institution.edu" /></label><button className="button primary full" disabled={!['review_ready', 'override_ready'].includes(application.status)}>Assign</button></form>{canRecordDecisions && <div className="drawer-section"><h3>Final decision</h3><div className="decision-grid">{['selected', 'waitlisted', 'rejected'].map((item) => <button className="button ghost" onClick={() => decision(item)} key={item}>{item}</button>)}</div></div>}</aside></div>
 }
 
 function Panel({ title, children }: { title: string; children: React.ReactNode }) { return <section className="panel organizer-panel"><h2>{title}</h2>{children}</section> }

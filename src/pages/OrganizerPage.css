@@ -23,3 +23,30 @@
   flex: none;
   padding: 4px 0;
 }
+
+.operator-form {
+  display: grid;
+  grid-template-columns: minmax(260px, 420px) auto;
+  align-items: end;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.operator-data-row {
+  grid-template-columns: minmax(300px, 1fr) 160px 70px;
+}
+
+.applicant-data-row {
+  grid-template-columns: minmax(260px, 1fr) minmax(180px, .7fr) 150px 90px 76px;
+  min-width: 900px;
+}
+
+.institution-cell {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 600px) {
+  .operator-form { grid-template-columns: 1fr; }
+  .operator-form .button { justify-self: start; }
+}

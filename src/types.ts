@@ -5,6 +5,7 @@ export type User = {
   last_name: string
   is_system_admin: boolean
   organizer_approved: boolean
+  campaign_operator: boolean
 }
 
 export type ResearchField = { id: number; name: string }
@@ -38,6 +39,8 @@ export type Campaign = {
   questions: Array<{ id: string; label: string; type: string; required?: boolean; options?: string[] }>
   research_fields: ResearchField[]
   rubric: RubricCriterion[]
+  can_manage_operators?: boolean
+  can_record_decisions?: boolean
 }
 
 export type Application = {
@@ -57,4 +60,3 @@ export type Application = {
   documents: Array<{ id: number; kind: string; original_name: string; size: number }>
   campaign?: Campaign
 }
-

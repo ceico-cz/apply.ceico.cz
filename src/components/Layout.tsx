@@ -27,9 +27,9 @@ export function Layout({ children, user }: { children: ReactNode; user?: User | 
       {!isLandingPage && <nav aria-label="Main navigation">
         <NavLink to="/openings">Open positions</NavLink>
         {user && <NavLink to="/dashboard">My dashboard</NavLink>}
-        {user?.organizer_approved && <NavLink to="/organizer">Organizer</NavLink>}
+        {user && (user.organizer_approved || user.campaign_operator) && <NavLink to="/organizer">Campaigns</NavLink>}
         {user?.is_system_admin && <NavLink to="/admin">Portal admin</NavLink>}
-        {user ? <details className="user-menu"><summary><span className="user-avatar">{initials}</span><span className="user-identity"><strong>{name || user.email}</strong><small>{user.email}</small></span><span aria-hidden="true">⌄</span></summary><div className="user-menu-panel"><div className="user-role">{user.is_system_admin ? 'Portal administrator' : user.organizer_approved ? 'Organizer' : 'Signed in'}</div><Link to="/dashboard">My dashboard</Link>{user.organizer_approved && <Link to="/organizer">Campaigns</Link>}{user.is_system_admin && <Link to="/admin">People and roles</Link>}<button type="button" onClick={logout}>Sign out</button></div></details> : <Link className="button ghost" to="/login">Sign in</Link>}
+        {user ? <details className="user-menu"><summary><span className="user-avatar">{initials}</span><span className="user-identity"><strong>{name || user.email}</strong><small>{user.email}</small></span><span aria-hidden="true">⌄</span></summary><div className="user-menu-panel"><div className="user-role">{user.is_system_admin ? 'Portal administrator' : user.organizer_approved ? 'Organizer' : user.campaign_operator ? 'Campaign operator' : 'Signed in'}</div><Link to="/dashboard">My dashboard</Link>{(user.organizer_approved || user.campaign_operator) && <Link to="/organizer">Campaigns</Link>}{user.is_system_admin && <Link to="/admin">People and roles</Link>}<button type="button" onClick={logout}>Sign out</button></div></details> : <Link className="button ghost" to="/login">Sign in</Link>}
       </nav>}
     </header>
     <main>{children}</main>
