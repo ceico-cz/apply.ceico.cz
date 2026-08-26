@@ -1,8 +1,18 @@
 import { Link, NavLink } from 'react-router-dom'
 import type { ReactNode } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
+import { api } from '../api'
 import type { User } from '../types'
 
 export function Layout({ children, user }: { children: ReactNode; user?: User | null }) {
+  const client = useQueryClient()
+  const logout = async () => {
+    await api('/auth/logout', { method: 'POST' })
+    client.setQueryData(['me'], null)
+    window.location.assign('/')
+  }
+  const name = user && [user.first_name, user.last_name].filter(Boolean).join(' ')
+  const initials = user ? `${user.first_name?.[0] || ''}${user.last_name?.[0] || ''}` || user.email[0].toUpperCase() : ''
   return <>
     <header className="site-header">
       <Link to="/" className="brand"><span className="brand-mark">C</span><span>CEICO <small>Academic opportunities</small></span></Link>
@@ -10,7 +20,8 @@ export function Layout({ children, user }: { children: ReactNode; user?: User | 
         <NavLink to="/openings">Open positions</NavLink>
         {user && <NavLink to="/dashboard">My dashboard</NavLink>}
         {user?.organizer_approved && <NavLink to="/organizer">Organizer</NavLink>}
-        {user ? <span className="user-chip">{user.first_name || user.email}</span> : <Link className="button ghost" to="/login">Sign in</Link>}
+        {user?.is_system_admin && <NavLink to="/admin">Portal admin</NavLink>}
+        {user ? <details className="user-menu"><summary><span className="user-avatar">{initials}</span><span className="user-identity"><strong>{name || user.email}</strong><small>{user.email}</small></span><span aria-hidden="true">⌄</span></summary><div className="user-menu-panel"><div className="user-role">{user.is_system_admin ? 'Portal administrator' : user.organizer_approved ? 'Organizer' : 'Signed in'}</div><Link to="/dashboard">My dashboard</Link>{user.organizer_approved && <Link to="/organizer">Campaigns</Link>}{user.is_system_admin && <Link to="/admin">People and roles</Link>}<button type="button" onClick={logout}>Sign out</button></div></details> : <Link className="button ghost" to="/login">Sign in</Link>}
       </nav>
     </header>
     <main>{children}</main>
@@ -25,4 +36,3 @@ export function StatusPill({ status }: { status: string }) {
 export function EmptyState({ title, children }: { title: string; children: ReactNode }) {
   return <div className="empty"><div className="empty-icon">◎</div><h2>{title}</h2><p>{children}</p></div>
 }
-

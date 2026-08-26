@@ -9,6 +9,7 @@ import { DashboardPage } from './pages/DashboardPage'
 import { RefereePage } from './pages/RefereePage'
 import { EvaluatorPage } from './pages/EvaluatorPage'
 import { OrganizerPage } from './pages/OrganizerPage'
+import { AdminPage } from './pages/AdminPage'
 import type { User } from './types'
 
 export default function App() {
@@ -30,6 +31,7 @@ export default function App() {
       <Route path="/referee/:requestId" element={user ? <RefereePage /> : <Navigate to="/login" replace />} />
       <Route path="/evaluate" element={user ? <EvaluatorPage /> : <Navigate to="/login" replace />} />
       <Route path="/organizer/*" element={user?.organizer_approved ? <OrganizerPage /> : <Navigate to="/" replace />} />
+      <Route path="/admin" element={user?.is_system_admin ? <AdminPage /> : <Navigate to="/" replace />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   </Layout>
