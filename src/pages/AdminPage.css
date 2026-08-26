@@ -13,13 +13,14 @@
 .admin-page { max-width: 1100px; }
 .admin-section { margin-bottom: 24px; }
 .admin-section-heading h2 { margin-bottom: 5px; }
-.admin-person-form { display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 10px; align-items: end; margin: 24px 0; }
-.admin-edit-form { display: grid; grid-template-columns: minmax(180px, 1fr) 1fr 1fr auto; gap: 10px; align-items: end; margin: 0 0 20px; padding: 18px; background: var(--surface-subtle); border-left: 4px solid var(--ceico-cyan); }
+.admin-person-form { display: grid; grid-template-columns: 2fr 1fr 1fr minmax(180px, 1.4fr) auto; gap: 10px; align-items: end; margin: 24px 0; }
+.admin-edit-form { display: grid; grid-template-columns: minmax(180px, 1fr) 1fr 1fr minmax(180px, 1.4fr) auto; gap: 10px; align-items: end; margin: 0 0 20px; padding: 18px; background: var(--surface-subtle); border-left: 4px solid var(--ceico-cyan); }
 .admin-edit-form small { display: block; color: #596d7c; margin-top: 4px; }
 .admin-edit-actions, .role-actions { display: flex; align-items: center; gap: 8px; }
 .admin-edit-form > .notice { grid-column: 1 / -1; margin: 4px 0 0; }
 .role-table { border-top: 1px solid var(--line); }
-.role-row { display: grid; grid-template-columns: minmax(260px, 1fr) 150px 150px 72px; gap: 18px; align-items: center; padding: 14px 8px; border-bottom: 1px solid var(--line); }
+.role-row { display: grid; grid-template-columns: minmax(240px, 1fr) minmax(180px, .8fr) 130px 130px 72px; gap: 18px; align-items: center; padding: 14px 8px; border-bottom: 1px solid var(--line); }
+.affiliation-cell { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .role-row small, .owner-row small { display: block; color: #71808c; margin-top: 4px; }
 .role-row label { display: flex; align-items: center; gap: 8px; font-size: .82rem; }
 .role-row input { width: auto; }
@@ -39,5 +40,5 @@
   .admin-person-form, .admin-edit-form, .owner-row { grid-template-columns: 1fr; }
   .admin-edit-form > .notice { grid-column: auto; }
   .role-table { overflow: auto; }
-  .role-row { min-width: 650px; }
+  .role-row { min-width: 850px; }
 }

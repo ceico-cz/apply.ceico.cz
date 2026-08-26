@@ -3,6 +3,7 @@ export type User = {
   email: string
   first_name: string
   last_name: string
+  primary_affiliation: string
   is_system_admin: boolean
   organizer_approved: boolean
   campaign_operator: boolean
