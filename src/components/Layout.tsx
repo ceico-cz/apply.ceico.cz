@@ -2,7 +2,8 @@ import { Link, NavLink, useLocation } from 'react-router-dom'
 import { useEffect, useRef, useState, type FocusEvent, type ReactNode } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { api } from '../api'
-import type { User } from '../types'
+import { ApplicationStatus, AssignmentStatus, DecisionOutcome, RefereeRequestStatus } from '../types'
+import type { StatusValue, User } from '../types'
 import './Layout.css'
 
 export function Layout({ children, user }: { children: ReactNode; user?: User | null }) {
@@ -52,10 +53,10 @@ export function Layout({ children, user }: { children: ReactNode; user?: User | 
   </>
 }
 
-export function StatusPill({ status }: { status: string }) {
-  const positive = ['review_ready', 'override_ready', 'submitted', 'selected'].includes(status)
-  const caution = ['awaiting_references', 'assigned', 'invited', 'waitlisted'].includes(status)
-  const negative = ['conflict', 'withdrawn', 'rejected'].includes(status)
+export function StatusPill({ status }: { status: StatusValue }) {
+  const positive = ([ApplicationStatus.reviewReady, ApplicationStatus.overrideReady, AssignmentStatus.submitted, DecisionOutcome.selected] as StatusValue[]).includes(status)
+  const caution = ([ApplicationStatus.awaitingReferences, AssignmentStatus.assigned, RefereeRequestStatus.invited, DecisionOutcome.waitlisted] as StatusValue[]).includes(status)
+  const negative = ([AssignmentStatus.conflict, ApplicationStatus.withdrawn, DecisionOutcome.rejected] as StatusValue[]).includes(status)
   const symbol = positive ? '✓' : caution ? '◷' : negative ? '!' : '•'
   return <span className={`status status-${status.replaceAll('_', '-')}`}><span aria-hidden="true">{symbol}</span>{status.replaceAll('_', ' ')}</span>
 }

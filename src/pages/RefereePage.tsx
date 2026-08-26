@@ -2,9 +2,10 @@ import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { Link, useParams } from 'react-router-dom'
 import { api, API_URL } from '../api'
 import { EmptyState, StatusPill } from '../components/Layout'
+import type { RefereeRequestStatus } from '../types'
 import './RefereePage.css'
 
-type Request = { id: number; campaign: string; applicant: string; status: string; submitted_at: string | null; letter_deadline: string; document: { id: number; original_name: string; size: number; created_at: string } | null }
+type Request = { id: number; campaign: string; applicant: string; status: RefereeRequestStatus; submitted_at: string | null; letter_deadline: string; document: { id: number; original_name: string; size: number; created_at: string } | null }
 const fileSize = (bytes: number) => bytes < 1024 * 1024 ? `${Math.ceil(bytes / 1024)} KB` : `${(bytes / 1024 / 1024).toFixed(1)} MB`
 export function RefereePage() {
   const { requestId } = useParams()

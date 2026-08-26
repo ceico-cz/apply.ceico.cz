@@ -1,3 +1,51 @@
+type ValueOf<T> = T[keyof T]
+
+export const ApplicationStatus = {
+  draft: 'draft',
+  submitted: 'submitted',
+  awaitingReferences: 'awaiting_references',
+  reviewReady: 'review_ready',
+  overrideReady: 'override_ready',
+  withdrawn: 'withdrawn',
+} as const
+export type ApplicationStatus = ValueOf<typeof ApplicationStatus>
+
+export const AssignmentStatus = {
+  assigned: 'assigned',
+  conflict: 'conflict',
+  submitted: 'submitted',
+} as const
+export type AssignmentStatus = ValueOf<typeof AssignmentStatus>
+
+export const RefereeRequestStatus = {
+  invited: 'invited',
+  submitted: 'submitted',
+} as const
+export type RefereeRequestStatus = ValueOf<typeof RefereeRequestStatus>
+
+export const DecisionOutcome = {
+  selected: 'selected',
+  waitlisted: 'waitlisted',
+  rejected: 'rejected',
+  withdrawn: 'withdrawn',
+} as const
+export type DecisionOutcome = ValueOf<typeof DecisionOutcome>
+
+export const DocumentKind = {
+  cv: 'cv',
+  researchStatement: 'research_statement',
+  additional: 'additional',
+  referenceLetter: 'reference_letter',
+} as const
+export type DocumentKind = ValueOf<typeof DocumentKind>
+export type ApplicantDocumentKind = Exclude<DocumentKind, typeof DocumentKind.referenceLetter>
+
+export type StatusValue =
+  | ApplicationStatus
+  | AssignmentStatus
+  | RefereeRequestStatus
+  | DecisionOutcome
+
 export type User = {
   id: number
   email: string
@@ -19,7 +67,7 @@ export type CampaignEvaluator = {
   last_name: string
   assignments: Array<{
     id: number
-    status: string
+    status: AssignmentStatus
     application_id: number
     applicant: { email: string; first_name: string; last_name: string }
   }>
@@ -61,7 +109,7 @@ export type Campaign = {
 export type Application = {
   id: number
   campaign_id: number
-  status: 'draft' | 'submitted' | 'awaiting_references' | 'review_ready' | 'override_ready' | 'withdrawn'
+  status: ApplicationStatus
   profile: Record<string, string>
   career: Array<Record<string, string>>
   responses: Record<string, string | string[] | boolean>
@@ -71,7 +119,7 @@ export type Application = {
   other_research: string
   consent_at: string | null
   applicant: { id: number; email: string; first_name: string; last_name: string }
-  referees: Array<{ id: number; first_name: string; last_name: string; email: string; phone: string; status: string }>
-  documents: Array<{ id: number; kind: string; original_name: string; size: number }>
+  referees: Array<{ id: number; first_name: string; last_name: string; email: string; phone: string; status: RefereeRequestStatus }>
+  documents: Array<{ id: number; kind: DocumentKind; original_name: string; size: number }>
   campaign?: Campaign
 }
