@@ -15,7 +15,10 @@ export function Layout({ children, user }: { children: ReactNode; user?: User | 
   const initials = user ? `${user.first_name?.[0] || ''}${user.last_name?.[0] || ''}` || user.email[0].toUpperCase() : ''
   return <>
     <header className="site-header">
-      <Link to="/" className="brand"><span className="brand-mark">C</span><span>CEICO <small>Academic opportunities</small></span></Link>
+      <Link to="/" className="brand" aria-label="CEICO academic opportunities home">
+        <img src="/brand/ceico-logo-color-negative.svg" alt="CEICO" />
+        <span>Academic opportunities</span>
+      </Link>
       <nav aria-label="Main navigation">
         <NavLink to="/openings">Open positions</NavLink>
         {user && <NavLink to="/dashboard">My dashboard</NavLink>}
@@ -30,7 +33,11 @@ export function Layout({ children, user }: { children: ReactNode; user?: User | 
 }
 
 export function StatusPill({ status }: { status: string }) {
-  return <span className={`status status-${status.replace('_', '-')}`}>{status.replaceAll('_', ' ')}</span>
+  const positive = ['review_ready', 'override_ready', 'submitted', 'selected'].includes(status)
+  const caution = ['awaiting_references', 'assigned', 'invited', 'waitlisted'].includes(status)
+  const negative = ['conflict', 'withdrawn', 'rejected'].includes(status)
+  const symbol = positive ? '✓' : caution ? '◷' : negative ? '!' : '•'
+  return <span className={`status status-${status.replaceAll('_', '-')}`}><span aria-hidden="true">{symbol}</span>{status.replaceAll('_', ' ')}</span>
 }
 
 export function EmptyState({ title, children }: { title: string; children: ReactNode }) {

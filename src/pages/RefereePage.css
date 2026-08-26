@@ -4,8 +4,9 @@
   gap: 14px;
   margin: 20px 0;
   padding: 15px 17px;
-  border: 1px solid #9bc9b9;
-  background: #edf7f2;
+  border: 1px solid #85b8a7;
+  border-left: 4px solid var(--green);
+  background: var(--green-bg);
 }
 
 .uploaded-reference > span {
@@ -22,4 +23,4 @@
 
 .uploaded-reference div { display: flex; flex-direction: column; gap: 3px; }
 .uploaded-reference a { font-weight: 700; }
-.uploaded-reference small { color: #557267; }
+.uploaded-reference small { color: #385f53; }

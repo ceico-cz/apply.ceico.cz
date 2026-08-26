@@ -5,12 +5,12 @@
 
 .applicant-link p {
   margin-bottom: 5px;
-  color: #455866;
+  color: #405869;
   line-height: 1.55;
 }
 
 .applicant-link small {
-  color: #71808c;
+  color: #596d7c;
 }
 
 .applicant-link-control {
@@ -21,7 +21,7 @@
 
 .applicant-link-control input {
   font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
-  background: #f7f9fa;
+  background: #f3f6f7;
 }
 
 @media (max-width: 700px) {
