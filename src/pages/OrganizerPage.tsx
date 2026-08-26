@@ -5,6 +5,19 @@ import { EmptyState, StatusPill } from '../components/Layout'
 import type { Application, Campaign, ResearchField } from '../types'
 import './OrganizerPage.css'
 
+type CampaignEvaluator = {
+  id: number
+  email: string
+  first_name: string
+  last_name: string
+  assignments: Array<{
+    id: number
+    status: string
+    application_id: number
+    applicant: { email: string; first_name: string; last_name: string }
+  }>
+}
+
 const iso = (days: number) => {
   const date = new Date(Date.now() + days * 86400000)
   date.setMinutes(date.getMinutes() - date.getTimezoneOffset())
@@ -35,6 +48,7 @@ function CampaignCreator({ onCreated }: { onCreated: (campaign: Campaign) => voi
 function CampaignWorkspace({ campaign }: { campaign: Campaign }) {
   const client = useQueryClient()
   const query = useQuery<Application[]>({ queryKey: ['campaign-applications', campaign.id], queryFn: () => api(`/campaigns/${campaign.id}/applications`) })
+  const evaluators = useQuery<CampaignEvaluator[]>({ queryKey: ['campaign-evaluators', campaign.id], queryFn: () => api(`/campaigns/${campaign.id}/evaluators`) })
   const [selected, setSelected] = useState<Application | null>(null)
   const [linkCopied, setLinkCopied] = useState(false)
   const applicantUrl = `${window.location.origin}/openings/${encodeURIComponent(campaign.slug)}`
@@ -45,12 +59,17 @@ function CampaignWorkspace({ campaign }: { campaign: Campaign }) {
     setLinkCopied(true)
     window.setTimeout(() => setLinkCopied(false), 2000)
   }
-  return <><div className="page-heading"><div><div className="eyebrow">Campaign workspace</div><h1>{campaign.title}</h1><p>Applications close {new Date(campaign.application_deadline).toLocaleString()}</p></div>{!campaign.review_open && <button className="button primary" onClick={openReview}>Open review</button>}</div><Panel title="Direct applicant link"><div className="applicant-link"><div><p>Share this URL in the job advertisement. Anyone with the link can view the opening, but applicants must verify their email before accessing an application.</p><small>{campaign.is_listed ? 'This campaign also appears on the public openings page.' : 'This campaign is unlisted and is available only to people who receive the direct link.'}</small></div><div className="applicant-link-control"><input aria-label="Direct applicant link" readOnly value={applicantUrl} onFocus={(event) => event.currentTarget.select()} /><button type="button" className="button secondary" onClick={copyApplicantUrl}>{linkCopied ? 'Copied' : 'Copy link'}</button><a className="button ghost" href={applicantUrl} target="_blank" rel="noreferrer">Preview ↗</a></div></div></Panel><div className="stats"><div><strong>{stats.total}</strong><span>Applications</span></div><div><strong>{stats.ready}</strong><span>Ready for review</span></div><div><strong>{stats.awaiting}</strong><span>Awaiting letters</span></div><div><strong>{campaign.review_open ? 'Open' : 'Closed'}</strong><span>Review</span></div></div><Panel title="Applicants">{query.data?.length ? <div className="data-table"><div className="data-row header"><span>Applicant</span><span>Status</span><span>References</span><span /></div>{query.data.map((item) => <div className="data-row" key={item.id}><span className="applicant-cell"><strong>{item.applicant.first_name || 'Unnamed'} {item.applicant.last_name}</strong><small>{item.applicant.email}</small></span><span><StatusPill status={item.status} /></span><span>{item.referees.filter((r) => r.status === 'submitted').length} / {campaign.required_referees}</span><span><button className="text-button" onClick={() => setSelected(item)}>Manage →</button></span></div>)}</div> : <EmptyState title="No applications yet">Applications submitted through the campaign link will appear here.</EmptyState>}</Panel>{selected && <ApplicantDrawer application={selected} campaign={campaign} close={() => setSelected(null)} refresh={() => client.invalidateQueries({ queryKey: ['campaign-applications', campaign.id] })} />}</>
+  return <><div className="page-heading"><div><div className="eyebrow">Campaign workspace</div><h1>{campaign.title}</h1><p>Applications close {new Date(campaign.application_deadline).toLocaleString()}</p></div>{!campaign.review_open && <button className="button primary" onClick={openReview}>Open review</button>}</div><Panel title="Direct applicant link"><div className="applicant-link"><div><p>Share this URL in the job advertisement. Anyone with the link can view the opening, but applicants must verify their email before accessing an application.</p><small>{campaign.is_listed ? 'This campaign also appears on the public openings page.' : 'This campaign is unlisted and is available only to people who receive the direct link.'}</small></div><div className="applicant-link-control"><input aria-label="Direct applicant link" readOnly value={applicantUrl} onFocus={(event) => event.currentTarget.select()} /><button type="button" className="button secondary" onClick={copyApplicantUrl}>{linkCopied ? 'Copied' : 'Copy link'}</button><a className="button ghost" href={applicantUrl} target="_blank" rel="noreferrer">Preview ↗</a></div></div></Panel><div className="stats"><div><strong>{stats.total}</strong><span>Applications</span></div><div><strong>{stats.ready}</strong><span>Ready for review</span></div><div><strong>{stats.awaiting}</strong><span>Awaiting letters</span></div><div><strong>{campaign.review_open ? 'Open' : 'Closed'}</strong><span>Review</span></div></div><EvaluatorPanel evaluators={evaluators.data} /><Panel title="Applicants">{query.data?.length ? <div className="data-table"><div className="data-row header"><span>Applicant</span><span>Status</span><span>References</span><span /></div>{query.data.map((item) => <div className="data-row" key={item.id}><span className="applicant-cell"><strong>{item.applicant.first_name || 'Unnamed'} {item.applicant.last_name}</strong><small>{item.applicant.email}</small></span><span><StatusPill status={item.status} /></span><span>{item.referees.filter((r) => r.status === 'submitted').length} / {campaign.required_referees}</span><span><button className="text-button" onClick={() => setSelected(item)}>Manage →</button></span></div>)}</div> : <EmptyState title="No applications yet">Applications submitted through the campaign link will appear here.</EmptyState>}</Panel>{selected && <ApplicantDrawer application={selected} campaign={campaign} close={() => setSelected(null)} refresh={() => client.invalidateQueries({ queryKey: ['campaign-applications', campaign.id] })} />}</>
+}
+
+function EvaluatorPanel({ evaluators }: { evaluators?: CampaignEvaluator[] }) {
+  return <Panel title="Evaluators">{evaluators === undefined ? <div className="table-empty">Loading evaluators…</div> : evaluators.length ? <div className="data-table"><div className="data-row evaluator-data-row header"><span>Evaluator</span><span>Progress</span><span>Applicants</span></div>{evaluators.map((evaluator) => { const submitted = evaluator.assignments.filter((item) => item.status === 'submitted').length; const conflicts = evaluator.assignments.filter((item) => item.status === 'conflict').length; const applicants = evaluator.assignments.map((item) => [item.applicant.first_name, item.applicant.last_name].filter(Boolean).join(' ') || item.applicant.email).join(', '); return <div className="data-row evaluator-data-row" key={evaluator.id}><span className="applicant-cell"><strong>{[evaluator.first_name, evaluator.last_name].filter(Boolean).join(' ') || evaluator.email}</strong><small>{evaluator.email}</small></span><span>{submitted} / {evaluator.assignments.length} submitted{conflicts ? ` · ${conflicts} conflict${conflicts === 1 ? '' : 's'}` : ''}</span><span className="assigned-applicants" title={applicants}>{applicants}</span></div>})}</div> : <div className="table-empty">No evaluators assigned yet.</div>}</Panel>
 }
 
 function ApplicantDrawer({ application, campaign, close, refresh }: { application: Application; campaign: Campaign; close: () => void; refresh: () => void }) {
+  const client = useQueryClient()
   const [email, setEmail] = useState('')
-  const assign = async (event: FormEvent) => { event.preventDefault(); await api(`/campaigns/${campaign.id}/assignments`, { method: 'POST', body: JSON.stringify({ application_id: application.id, evaluator_email: email }) }); setEmail(''); window.alert('Evaluator assigned') }
+  const assign = async (event: FormEvent) => { event.preventDefault(); await api(`/campaigns/${campaign.id}/assignments`, { method: 'POST', body: JSON.stringify({ application_id: application.id, evaluator_email: email }) }); setEmail(''); await client.invalidateQueries({ queryKey: ['campaign-evaluators', campaign.id] }); window.alert('Evaluator assigned') }
   const override = async () => { const reason = window.prompt('Record the reason for admitting this incomplete application'); if (reason) { await api(`/applications/${application.id}/override`, { method: 'POST', body: JSON.stringify({ reason }) }); refresh(); close() } }
   const decision = async (outcome: string) => {
     await api(`/applications/${application.id}/decision`, { method: 'PUT', body: JSON.stringify({ outcome, notes: '' }) })
