@@ -37,7 +37,7 @@
 }
 
 .applicant-data-row {
-  grid-template-columns: minmax(260px, 1fr) minmax(180px, .7fr) 150px 90px 76px;
+  grid-template-columns: minmax(260px, 1fr) minmax(180px, .7fr) 150px 90px 84px;
   min-width: 900px;
 }
 
@@ -59,6 +59,49 @@
 .organizer-panel-heading h2 {
   margin: 0;
   font-size: 1.35rem;
+}
+
+.applicant-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.manage-applicant,
+.remove-applicant {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius);
+  line-height: 1;
+  cursor: pointer;
+}
+
+.manage-applicant {
+  border: 1px solid #8fa1ad;
+  background: #edf3f5;
+  color: var(--ink);
+  font-size: 1rem;
+}
+
+.manage-applicant:hover {
+  color: #fff;
+  background: var(--ink);
+  border-color: var(--ink);
+}
+
+.remove-applicant {
+  border: 1px solid #d8a4a8;
+  background: var(--red-bg);
+  color: var(--red);
+  font-size: 1.25rem;
+}
+
+.remove-applicant:hover {
+  color: #fff;
+  background: var(--red);
+  border-color: var(--red);
 }
 
 @media (max-width: 600px) {
