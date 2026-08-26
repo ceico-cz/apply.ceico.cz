@@ -31,7 +31,7 @@ export default function App() {
       <Route path="/referee/:requestId" element={user ? <RefereePage /> : <Navigate to="/login" replace />} />
       <Route path="/evaluate" element={user ? <EvaluatorPage /> : <Navigate to="/login" replace />} />
       <Route path="/organizer/*" element={user?.organizer_approved ? <OrganizerPage /> : <Navigate to="/" replace />} />
-      <Route path="/admin" element={user?.is_system_admin ? <AdminPage /> : <Navigate to="/" replace />} />
+      <Route path="/admin" element={user?.is_system_admin ? <AdminPage currentUser={user} /> : <Navigate to="/" replace />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   </Layout>
