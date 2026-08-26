@@ -33,7 +33,7 @@ export function Layout({ children, user }: { children: ReactNode; user?: User | 
       </nav>}
     </header>
     <main>{children}</main>
-    <footer><span>CEICO Recruitment</span><span>Privacy · Accessibility · Contact</span></footer>
+    <footer><span>(c) CEICO 2026</span><span>Privacy · Accessibility · Contact</span></footer>
   </>
 }
 
