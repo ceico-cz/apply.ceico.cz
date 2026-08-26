@@ -6,6 +6,7 @@ export type User = {
   is_system_admin: boolean
   organizer_approved: boolean
   campaign_operator: boolean
+  can_edit_profile: boolean
 }
 
 export type ResearchField = { id: number; name: string }

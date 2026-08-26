@@ -10,6 +10,7 @@ import { RefereePage } from './pages/RefereePage'
 import { EvaluatorPage } from './pages/EvaluatorPage'
 import { OrganizerPage } from './pages/OrganizerPage'
 import { AdminPage } from './pages/AdminPage'
+import { ProfilePage } from './pages/ProfilePage'
 import type { User } from './types'
 
 export default function App() {
@@ -33,6 +34,7 @@ export default function App() {
       <Route path="/evaluate" element={user ? <EvaluatorPage /> : <Navigate to="/login" replace />} />
       <Route path="/organizer/*" element={user && (user.organizer_approved || user.campaign_operator) ? <OrganizerPage canCreate={user.organizer_approved} /> : <Navigate to="/" replace />} />
       <Route path="/admin" element={user?.is_system_admin ? <AdminPage currentUser={user} /> : <Navigate to="/" replace />} />
+      <Route path="/profile" element={user?.can_edit_profile ? <ProfilePage user={user} /> : <Navigate to="/" replace />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   </Layout>
