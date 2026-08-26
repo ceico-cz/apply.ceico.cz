@@ -33,7 +33,15 @@
 }
 
 .data-row.operator-data-row {
-  grid-template-columns: minmax(300px, 1fr) 160px 70px;
+  grid-template-columns: minmax(300px, 1fr) 160px 84px;
+  min-width: 650px;
+  white-space: nowrap;
+}
+
+.data-row.evaluator-data-row {
+  grid-template-columns: minmax(300px, 1fr) minmax(220px, .7fr) 84px;
+  min-width: 700px;
+  white-space: nowrap;
 }
 
 .data-row.applicant-data-row {
@@ -86,6 +94,12 @@
   gap: 8px;
 }
 
+.roster-actions {
+  display: flex;
+  align-items: center;
+  min-height: 32px;
+}
+
 .applicant-pagination {
   display: grid;
   grid-template-columns: 1fr auto auto;
@@ -108,7 +122,8 @@
 }
 
 .manage-applicant,
-.remove-applicant {
+.remove-applicant,
+.remove-roster-member {
   width: 32px;
   height: 32px;
   display: grid;
@@ -131,14 +146,16 @@
   border-color: var(--ink);
 }
 
-.remove-applicant {
+.remove-applicant,
+.remove-roster-member {
   border: 1px solid #d8a4a8;
   background: var(--red-bg);
   color: var(--red);
   font-size: 1.25rem;
 }
 
-.remove-applicant:hover {
+.remove-applicant:hover,
+.remove-roster-member:hover {
   color: #fff;
   background: var(--red);
   border-color: var(--red);
