@@ -1,35 +1,21 @@
 .applicant-link {
-  display: grid;
-  gap: 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
-.applicant-link p {
-  margin-bottom: 5px;
-  color: #405869;
-  line-height: 1.55;
-}
-
-.applicant-link small {
-  color: #596d7c;
-}
-
-.applicant-link-control {
-  display: grid;
-  grid-template-columns: minmax(260px, 1fr) auto auto;
-  gap: 10px;
-}
-
-.applicant-link-control input {
+.applicant-url {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--ink);
+  font-size: .88rem;
+  font-weight: 600;
   font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
-  background: #f3f6f7;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 @media (max-width: 700px) {
-  .applicant-link-control {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .applicant-link-control input {
-    grid-column: 1 / -1;
-  }
+  .applicant-link { align-items: stretch; flex-direction: column; }
+  .applicant-link .button { align-self: flex-start; }
 }
