@@ -32,13 +32,13 @@
   margin-bottom: 18px;
 }
 
-.operator-data-row {
+.data-row.operator-data-row {
   grid-template-columns: minmax(300px, 1fr) 160px 70px;
 }
 
-.applicant-data-row {
-  grid-template-columns: minmax(260px, 1fr) minmax(180px, .7fr) 150px 90px 84px;
-  min-width: 900px;
+.data-row.applicant-data-row {
+  grid-template-columns: minmax(300px, 1fr) minmax(150px, .6fr) 170px 90px 84px;
+  min-width: 940px;
   min-height: 49px;
   white-space: nowrap;
 }
