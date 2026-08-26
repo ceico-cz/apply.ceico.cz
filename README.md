@@ -20,3 +20,6 @@ VITE_API_URL=https://api.apply.ceico.cz npm run dev
 ## Deployment
 
 Pushes to `main` are linted, built, and deployed through GitHub Actions. `VITE_API_URL` supplies the public API origin. `VITE_BASE_PATH` is `/` because Pages serves this repository through the `apply.ceico.cz` custom domain.
+
+See [`DEPLOYMENT.md`](DEPLOYMENT.md) for one-time repository configuration,
+production verification, and rollback instructions.
