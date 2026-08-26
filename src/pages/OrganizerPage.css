@@ -39,6 +39,24 @@
 .applicant-data-row {
   grid-template-columns: minmax(260px, 1fr) minmax(180px, .7fr) 150px 90px 84px;
   min-width: 900px;
+  min-height: 49px;
+  white-space: nowrap;
+}
+
+.applicant-data-row > * {
+  min-width: 0;
+}
+
+.applicant-data-row .applicant-cell {
+  flex-wrap: nowrap;
+}
+
+.applicant-data-row .applicant-cell strong,
+.applicant-data-row .applicant-cell small {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .institution-cell {
@@ -64,7 +82,29 @@
 .applicant-actions {
   display: flex;
   align-items: center;
+  flex-wrap: nowrap;
   gap: 8px;
+}
+
+.applicant-pagination {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 18px;
+  padding: 16px 10px 0;
+  color: #526675;
+  font-size: .78rem;
+}
+
+.applicant-pagination > div {
+  display: flex;
+  gap: 8px;
+}
+
+.applicant-pagination .button {
+  min-height: 36px;
+  padding: 8px 13px;
+  font-size: .78rem;
 }
 
 .manage-applicant,
@@ -108,4 +148,6 @@
   .organizer-panel-heading { align-items: flex-start; flex-direction: column; }
   .operator-form { grid-template-columns: 1fr; }
   .operator-form .button { justify-self: start; }
+  .applicant-pagination { grid-template-columns: 1fr auto; }
+  .applicant-pagination > span:nth-child(2) { display: none; }
 }
