@@ -1,0 +1,40 @@
+.pocket-id-button {
+  margin-top: 22px;
+  background: #171b27;
+  color: #fff;
+  border-color: #171b27;
+}
+
+.pocket-id-button:hover { background: #262c3d; }
+
+.pocket-id-mark {
+  width: 25px;
+  height: 25px;
+  display: grid;
+  place-items: center;
+  border-radius: 7px;
+  background: #8b5cf6;
+  color: #fff;
+  font-weight: 800;
+}
+
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 28px 0 22px;
+  color: #80909d;
+  font-size: .72rem;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: '';
+  height: 1px;
+  flex: 1;
+  background: var(--line);
+}
+
+.auth-divider span { white-space: nowrap; }
