@@ -1,10 +1,14 @@
 .applicant-link {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
+  min-width: 0;
+  margin-bottom: 20px;
+  white-space: nowrap;
 }
 
 .applicant-url {
+  flex: 1;
   min-width: 0;
   overflow: hidden;
   color: var(--ink);
@@ -15,7 +19,7 @@
   white-space: nowrap;
 }
 
-@media (max-width: 700px) {
-  .applicant-link { align-items: stretch; flex-direction: column; }
-  .applicant-link .button { align-self: flex-start; }
+.applicant-link .text-button {
+  flex: none;
+  padding: 4px 0;
 }
