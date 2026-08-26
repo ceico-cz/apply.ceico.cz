@@ -7,10 +7,7 @@ import { EmptyState } from '../components/Layout'
 const date = (value: string) => new Intl.DateTimeFormat(undefined, { dateStyle: 'long', timeStyle: 'short' }).format(new Date(value))
 
 export function HomePage() {
-  return <>
-    <section className="hero"><div className="eyebrow">Research with impact</div><h1>Join the next generation<br />of scientific discovery.</h1><p>Explore open academic positions and manage every step of your application in one secure place.</p><Link className="button primary" to="/openings">Explore open positions <span>→</span></Link></section>
-    <section className="feature-grid container"><article><span>01</span><h2>Simple application</h2><p>Save your progress, upload PDFs, and update your materials until the deadline.</p></article><article><span>02</span><h2>Clear reference tracking</h2><p>Know when invitations are delivered and when confidential letters arrive.</p></article><article><span>03</span><h2>Passwordless access</h2><p>Secure email links keep your applications and review tasks together.</p></article></section>
-  </>
+  return <section className="landing-page"><div className="landing-panel"><div className="eyebrow">CEICO opportunities portal</div><h1>Sign in to continue</h1><p>Applicants, referees, evaluators, organizers, and administrators use the same secure sign-in.</p><div className="landing-actions"><Link className="button primary" to="/login">Sign in to the portal <span aria-hidden="true">→</span></Link><a className="button secondary" href="https://ceico.cz">Visit the CEICO website <span aria-hidden="true">↗</span></a></div></div></section>
 }
 
 export function OpeningsPage() {
