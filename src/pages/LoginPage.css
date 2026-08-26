@@ -38,3 +38,14 @@
 }
 
 .auth-divider span { white-space: nowrap; }
+
+.identity-card { text-align: left; }
+.identity-card h1 { font-size: clamp(2rem, 7vw, 3rem); }
+.identity-summary {
+  padding: 14px 16px;
+  background: var(--surface-subtle);
+  border-left: 4px solid var(--ceico-cyan);
+  overflow-wrap: anywhere;
+}
+.identity-actions { display: grid; gap: 10px; margin-top: 28px; }
+.identity-actions form { margin: 0; }
