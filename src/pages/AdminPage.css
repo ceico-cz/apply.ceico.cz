@@ -19,12 +19,15 @@
 .admin-edit-actions, .role-actions { display: flex; align-items: center; gap: 8px; }
 .admin-edit-form > .notice { grid-column: 1 / -1; margin: 4px 0 0; }
 .role-table { border-top: 1px solid var(--line); }
-.role-row { display: grid; grid-template-columns: minmax(260px, 1fr) 150px 150px 104px; gap: 18px; align-items: center; padding: 14px 8px; border-bottom: 1px solid var(--line); }
+.role-row { display: grid; grid-template-columns: minmax(260px, 1fr) 150px 150px 72px; gap: 18px; align-items: center; padding: 14px 8px; border-bottom: 1px solid var(--line); }
 .role-row small, .owner-row small { display: block; color: #71808c; margin-top: 4px; }
 .role-row label { display: flex; align-items: center; gap: 8px; font-size: .82rem; }
 .role-row input { width: auto; }
 .role-header { color: #71808c; text-transform: uppercase; font-size: .65rem; }
-.delete-user { width: 32px; height: 32px; border: 1px solid #d8a4a8; border-radius: var(--radius); background: var(--red-bg); color: var(--red); font-size: 1.25rem; line-height: 1; cursor: pointer; }
+.edit-user, .delete-user { width: 32px; height: 32px; display: grid; place-items: center; border-radius: var(--radius); line-height: 1; cursor: pointer; }
+.edit-user { border: 1px solid #8fa1ad; background: #edf3f5; color: var(--ink); font-size: 1.05rem; }
+.edit-user:hover { color: #fff; background: var(--ink); border-color: var(--ink); }
+.delete-user { border: 1px solid #d8a4a8; background: var(--red-bg); color: var(--red); font-size: 1.25rem; }
 .delete-user:hover:not(:disabled) { color: #fff; background: var(--red); border-color: var(--red); }
 .delete-user:disabled { opacity: .28; cursor: not-allowed; }
 .owner-row { display: grid; grid-template-columns: 1fr minmax(300px, 430px); gap: 30px; align-items: center; padding: 16px 8px; border-bottom: 1px solid var(--line); }
