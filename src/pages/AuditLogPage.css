@@ -1,0 +1,21 @@
+.audit-page { max-width: 1400px; }
+.audit-campaign-picker { display: block; max-width: 420px; margin-top: 20px; color: #526878; font-size: .75rem; font-weight: 700; }
+.audit-campaign-picker select { margin-top: 6px; }
+.audit-heading { align-items: end; }
+.audit-panel { padding: 0; overflow: hidden; }
+.audit-table-wrap { overflow-x: auto; }
+.audit-table { width: 100%; min-width: 920px; border-collapse: collapse; text-align: left; font-size: .84rem; }
+.audit-table th { padding: 12px 16px; color: #526878; background: var(--surface-subtle); border-bottom: 1px solid var(--line); font-size: .68rem; text-transform: uppercase; }
+.audit-table td { padding: 15px 16px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.audit-table tbody tr:hover { background: #f7f9fa; }
+.audit-table td:first-child { white-space: nowrap; }
+.audit-table strong, .audit-table small { display: block; }
+.audit-table small { margin-top: 3px; color: #596d7c; }
+.audit-role { display: inline-block; margin-top: 7px; padding: 2px 7px; border: 1px solid #9babb5; border-radius: var(--radius); color: var(--ink); font-size: .68rem; }
+.audit-pagination { display: flex; justify-content: space-between; align-items: center; gap: 20px; padding: 16px; color: #526878; font-size: .82rem; }
+.audit-pagination div { display: flex; gap: 8px; }
+
+@media (max-width: 600px) {
+  .audit-heading { align-items: flex-start; }
+  .audit-pagination { align-items: flex-start; flex-direction: column; }
+}

@@ -123,3 +123,22 @@ export type Application = {
   documents: Array<{ id: number; kind: DocumentKind; original_name: string; size: number }>
   campaign?: Campaign
 }
+
+export type AuditEvent = {
+  id: number
+  action: string
+  actor: { id: number | null; name: string; email: string; role: string }
+  campaign: { id: number; title: string } | null
+  application_id: number | null
+  target: { type: string; id: number | null }
+  metadata: Record<string, string | number | null>
+  created_at: string
+}
+
+export type AuditEventPage = {
+  items: AuditEvent[]
+  page: number
+  page_size: number
+  total: number
+  pages: number
+}

@@ -12,6 +12,7 @@ import { OrganizerPage } from './pages/OrganizerPage'
 import { AdminPage } from './pages/AdminPage'
 import { ProfilePage } from './pages/ProfilePage'
 import { AssignmentMatrixPage } from './pages/AssignmentMatrixPage'
+import { AuditLogPage, CampaignAuditLogPage, OrganizerAuditLogPage } from './pages/AuditLogPage'
 import type { User } from './types'
 
 export default function App() {
@@ -34,7 +35,10 @@ export default function App() {
       <Route path="/referee/:requestId" element={user ? <RefereePage /> : <Navigate to="/login" replace />} />
       <Route path="/evaluate" element={user ? <EvaluatorPage /> : <Navigate to="/login" replace />} />
       <Route path="/organizer/campaigns/:campaignId/assignments" element={user && (user.organizer_approved || user.campaign_operator) ? <AssignmentMatrixPage /> : <Navigate to="/" replace />} />
+      <Route path="/organizer/campaigns/:campaignId/audit" element={user && (user.organizer_approved || user.campaign_operator) ? <CampaignAuditLogPage /> : <Navigate to="/" replace />} />
+      <Route path="/organizer/audit" element={user && (user.organizer_approved || user.campaign_operator) ? <OrganizerAuditLogPage /> : <Navigate to="/" replace />} />
       <Route path="/organizer/*" element={user && (user.organizer_approved || user.campaign_operator) ? <OrganizerPage canCreate={user.organizer_approved} /> : <Navigate to="/" replace />} />
+      <Route path="/admin/audit" element={user?.is_system_admin ? <AuditLogPage /> : <Navigate to="/" replace />} />
       <Route path="/admin" element={user?.is_system_admin ? <AdminPage currentUser={user} /> : <Navigate to="/" replace />} />
       <Route path="/profile" element={user?.can_edit_profile ? <ProfilePage user={user} /> : <Navigate to="/" replace />} />
       <Route path="*" element={<Navigate to="/" replace />} />
